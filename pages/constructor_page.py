@@ -43,15 +43,11 @@ class ConstructorPage(BasePage):
 
     @allure.step("Получение номера заказа из модального окна")
     def get_order_number(self):
-        # 1. Ждем, когда само поле с номером станет видимым
         element = self.wait_for_visibility(ConstructorLocators.ORDER_NUMBER_MODAL)
         
-        # 2. Ждем, когда в поле появится реальный номер (не 9999 и не пустота)
-        # Увеличиваем таймаут до 30 секунд, так как бэкенд реально медленный
         WebDriverWait(self.driver, 30).until(
             lambda d: d.find_element(*ConstructorLocators.ORDER_NUMBER_MODAL).text not in ["9999", "0", ""]
         )
         
         raw_number = element.text
-        # Форматируем в 6 знаков с нулями впереди
         return raw_number.strip().zfill(6)

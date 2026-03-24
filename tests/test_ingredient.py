@@ -25,5 +25,4 @@ class TestIngredient:
         constructor_page = ConstructorPage(driver)
         constructor_page.open_url(Urls.BASE_URL)
         constructor_page.add_ingredient_to_basket()
-        # Булки добавляются парой (верхняя и нижняя), поэтому ожидаем "2"
         assert constructor_page.get_ingredient_counter() == "2"

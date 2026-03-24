@@ -11,8 +11,7 @@ class BasePage:
     def open_url(self, url):
         self.driver.get(url)
 
-    @allure.step("Получение текущего URL")
-    def get_current_url(self):
+    def get_url(self):
         return self.driver.current_url
 
     def find_element(self, locator):
@@ -25,44 +24,36 @@ class BasePage:
             EC.presence_of_all_elements_located(locator)
         )
 
-    @allure.step("Клик по элементу (стандартный)")
     def click_element(self, locator):
         element = WebDriverWait(self.driver, Constants.WAIT_TIME).until(
             EC.element_to_be_clickable(locator)
         )
         element.click()
 
-    @allure.step("Клик по элементу через JavaScript (силовой)")
     def click_element_js(self, locator):
         element = self.find_element(locator)
         self.driver.execute_script("arguments[0].click();", element)
 
-    @allure.step("Ввод текста")
     def set_text(self, locator, text):
         element = self.find_element(locator)
         element.send_keys(text)
 
-    @allure.step("Получение текста элемента")
     def get_text(self, locator):
         return self.wait_for_visibility(locator).text
 
-    @allure.step("Ожидание видимости элемента")
     def wait_for_visibility(self, locator):
         return WebDriverWait(self.driver, Constants.WAIT_TIME).until(
             EC.visibility_of_element_located(locator)
         )
 
-    @allure.step("Ожидание исчезновения элемента")
     def wait_for_invisibility(self, locator):
         return WebDriverWait(self.driver, Constants.WAIT_TIME).until(
             EC.invisibility_of_element_located(locator)
         )
 
-    @allure.step("Перетаскивание элемента (Drag and Drop)")
     def drag_and_drop(self, source_locator, target_locator):
         source = self.find_element(source_locator)
         target = self.find_element(target_locator)
-        # JS-скрипт для обхода бага Firefox с HTML5 Drag and Drop
         script = """
         function createEvent(typeOfEvent) {
             var event = document.createEvent("CustomEvent");

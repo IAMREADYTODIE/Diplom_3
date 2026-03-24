@@ -18,10 +18,20 @@ class FeedPage(BasePage):
         elements = self.find_elements(FeedLocators.ORDERS_IN_PROGRESS)
         return [el.text for el in elements]
 
-    @allure.step("Ожидание обновления счетчика")
-    def wait_for_counter_to_change(self, locator, initial_value):
-        # Ждем, пока значение счетчика станет отличным от начального
+    @allure.step("Ожидание обновления счетчика 'Всего'")
+    def wait_for_total_counter_to_change(self, initial_value):
         WebDriverWait(self.driver, 20).until(
-            lambda d: int(d.find_element(*locator).text) > initial_value
+            lambda d: int(d.find_element(*FeedLocators.TOTAL_ORDERS).text) > initial_value
         )
-        
+
+    @allure.step("Ожидание обновления счетчика 'Сегодня'")
+    def wait_for_today_counter_to_change(self, initial_value):
+        WebDriverWait(self.driver, 20).until(
+            lambda d: int(d.find_element(*FeedLocators.TODAY_ORDERS).text) > initial_value
+        )
+
+    @allure.step("Ожидание появления номера заказа в разделе 'В работе'")
+    def wait_for_order_in_work(self, order_number):
+        WebDriverWait(self.driver, 30).until(
+            lambda d: any(order_number in order for order in self.get_orders_in_progress())
+        )
